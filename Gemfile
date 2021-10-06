@@ -68,7 +68,9 @@ end
 group :test do
   gem "vcr"
   gem "webmock"
+  #gem "minitest"
   #gem "minitest-rails"
+  gem 'minitest-reporters'
   gem "minitest-bisect"
   gem "minitest-line"
 end

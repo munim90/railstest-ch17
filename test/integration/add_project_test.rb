@@ -1,30 +1,39 @@
 require "test_helper"
 
 class AddProjectTest < ActionDispatch::IntegrationTest
+    setup do
+        @user = FactoryBot.create(:user)
+        login_as @user
+    end
+
     test "allows a user to create a project with tasks" do
-        post(projects_path, params: {project:
-            {name: "Project Runway", tasks: "Choose Fabric:3\nMake it Work:5"}})
+        visit new_project_path
+        fill_in "Name", with: "Project Runway"
+        fill_in "Tasks", with: "Choose Fabric:3\nMake it Work:5"
+        click_on("Create Project")
+        visit projects_path
         @project = Project.find_by(name: "Project Runway")
-        follow_redirect!
-        assert_select("#project_#{@project.id} .name", "Project Runway")
-        assert_select("#project_#{@project.id} .total-size", text: "8")
+        visit("/")
+        assert_selector("#project_#{@project.id} .name", text: "Project Runway")
+        assert_selector("#project_#{@project.id} .total-size", text: "8")
     end
 
     test "does not allow a user to create a project without a name" do
-        post(projects_path, params: {project:
-            {tasks: "Choose Fabric:3\nMake it Work:5"}})
-        assert_select(".new_project")
+        visit new_project_path
+        fill_in "Name", with: ""
+        fill_in "Tasks", with: "Choose Fabric:3\nMake it Work:5"
+        click_on("Create Project")
+        assert_selector(".new_project")
     end
 
     test "behaves correctly with a database failure" do
         workflow = stub(success?: false, create: false, project: Project.new)
-        CreatesProject.stubs(:new)
-        .with(name: "Project Runway",
-            task_string: "Choose Fabric:3\nMake it Work:5")
-        .returns(workflow)
-        post(projects_path, params: {project:
-            {name: "Project Runway", tasks: "Choose Fabric:3\nMake it Work:5"}})
+        CreatesProject.stubs(:new).returns(workflow)
+        visit new_project_path
+        fill_in "Name", with: "Project Runway"
+        fill_in "Tasks", with: "Choose Fabric:3\nMake it Work:5"
+        click_on("Create Project")
         @project = Project.find_by(name: "Project Runway")
-        assert_select(".new_project")
+        assert_selector(".new_project")
     end
 end

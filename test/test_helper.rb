@@ -1,16 +1,17 @@
-require File.expand_path("../../config/environment", __FILE__)
-require "rails/test_help"
-require "mocha"
-require "vcr"
+ENV['RAILS_ENV'] ||= 'test'
+require_relative '../config/environment'
+require 'rails/test_help'
+require "mocha/minitest"
 
-module ActiveSupport
-  class TestCase
-    # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical
-    # order.
-    fixtures :all
+class ActiveSupport::TestCase
+  # Run tests in parallel with specified workers
+  parallelize(workers: :number_of_processors)
 
-    # Add more helper methods to be used by all tests here...
-  end
+  # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
+  fixtures :all
+
+  # Add more helper methods to be used by all tests here...
+
 end
 
 def assert_select_string(string, *selectors, &block)
@@ -18,7 +19,6 @@ def assert_select_string(string, *selectors, &block)
   assert_select(doc_root, *selectors, &block)
 end
 
-#
 module ActionController
   class TestCase
     include Devise::Test::ControllerHelpers
@@ -30,12 +30,23 @@ module ActionDispatch
     include Devise::Test::IntegrationHelpers
   end
 end
-#
 
-#
+require 'capybara/rails'
+require 'capybara/minitest'
+
+class ActionDispatch::IntegrationTest
+  include Capybara::DSL
+  include Capybara::Minitest::Assertions
+
+  # Reset sessions and driver between tests
+  teardown do
+    Capybara.reset_sessions!
+    Capybara.use_default_driver
+  end
+end
+
 VCR.configure do |c|
   c.cassette_library_dir = "test/vcr"
   c.hook_into :webmock
   c.ignore_localhost = true
 end
-#

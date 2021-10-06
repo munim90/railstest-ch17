@@ -60,6 +60,7 @@ GEM
       public_suffix (>= 2.0.2, < 5.0)
     airbrussh (1.4.0)
       sshkit (>= 1.6.1, != 1.7.0)
+    ansi (1.5.0)
     ast (2.4.2)
     awesome_print (1.9.2)
     bcrypt (3.1.16)
@@ -213,6 +214,11 @@ GEM
       path_expander (~> 1.1)
     minitest-line (0.6.5)
       minitest (~> 5.0)
+    minitest-reporters (1.4.3)
+      ansi
+      builder
+      minitest (>= 5.0)
+      ruby-progressbar
     minitest-server (1.0.6)
       minitest (~> 5.0)
     mocha (1.13.0)
@@ -425,6 +431,7 @@ DEPENDENCIES
   mimemagic (~> 0.3.10)
   minitest-bisect
   minitest-line
+  minitest-reporters
   mocha
   pry-byebug
   pry-rails

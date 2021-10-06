@@ -1,4 +1,6 @@
-require "test_helper"
+require_relative "../active_record_test_helper"
+require_relative "../../app/models/project"
+require_relative "../../app/models/task"
 
 class TaskTest < ActiveSupport::TestCase
     test "a completed task is complete" do

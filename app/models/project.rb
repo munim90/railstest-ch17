@@ -59,4 +59,8 @@ class Project < ApplicationRecord
     (tasks.last.project_order || tasks.size) + 1
   end
   # #END: next_task_order
+
+  def add_users(users)
+    self.users << users
+  end
 end

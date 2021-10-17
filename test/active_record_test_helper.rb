@@ -15,7 +15,7 @@ ActiveRecord::Base.establish_connection(connection_info)
 module ActiveSupport
   class TestCase
     teardown do
-      ActiveRecord::Base.subclasses.each(&:delete_all)
+      ApplicationRecord.subclasses.each(&:destroy_all)
     end
   end
 end

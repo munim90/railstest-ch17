@@ -1,4 +1,11 @@
-require "rails_helper"
+require_relative "../active_record_spec_helper"
+require "devise"
+require "devise/orm/active_record"
+require_relative "../../app/models/project"
+require_relative "../../app/models/task"
+require_relative "../../app/models/role"
+require_relative "../../app/models/user"
+require_relative "../../app/workflows/creates_project"
 
 RSpec.describe CreatesProject do
 
@@ -100,11 +107,20 @@ RSpec.describe CreatesProject do
 
     #
     it "adds users to the project" do
-      user = create(:user)
+      project = Project.new
+      user = double
+      expect(project).to receive(:add_users).with([user])
+      allow(Project).to receive(:new).and_return(project)
       creator = CreatesProject.new(name: "Project Runway", users: [user])
       creator.build
-      expect(creator.project.users).to eq([user])
     end
     #
+
+    def build
+      self.project = Project.new(name: name)
+      project.tasks = convert_string_to_tasks
+      project.add_users(users)
+      project
+    end
 
 end
